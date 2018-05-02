@@ -1,0 +1,25 @@
+import java.util.*;
+import java.io.*;
+
+
+public class Template2006 {
+ 
+    public static void main(String[] args) throws IOException {
+    	Event actEvent;
+    	State actState1 = new State();
+    	State actState2 = new State();
+    	new EventList();
+        EventList.InsertEvent(G.arrivalTo1, 1);	//Interarrival time = 1, 2 or 5
+        EventList.InsertEvent(G.MEASURE, Math.exp(5));
+    	while (G.time < 100000){
+    		actEvent = EventList.FetchEvent();
+    		G.time = actEvent.eventTime;
+    		actState1.TreatEvent(actEvent);
+    	}
+    	System.out.println(1.0*actState1.accumulated/actState1.noMeasurements + 
+    			1.0*actState2.accumulated/actState2.noMeasurements);	//The mean nr of customers in the system
+    	System.out.println(actState1.accumulated + actState2.accumulated);	//Total nr of customers in the system during the simulation
+    	System.out.println(actState1.noMeasurements);	//Number of measurements 
+    	actState1.W.close();
+    }
+}
