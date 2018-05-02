@@ -14,9 +14,10 @@ class State{
 				if (numberInQueue1 < 10){
 					numberInQueue1++;
 					if (numberInQueue1 == 1){
+						double temp = (2.1)*Math.log(slump.nextDouble());
 						EventList.InsertEvent(G.departureFrom1, G.time - (2.1)*Math.log(slump.nextDouble()));
 					}
-					EventList.InsertEvent(G.arrivalTo1, G.time + 1); //interarrival time = 1, 2 or 5
+					EventList.InsertEvent(G.arrivalTo1, G.time + 3); //interarrival time = 1, 2 or 5
 				} else {
 					noRejected++;
 				}				

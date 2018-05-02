@@ -16,7 +16,7 @@ class State{
 					if (numberInQueue1 == 1){
 						EventList.InsertEvent(G.departureFrom1, G.time - (2.1)*Math.log(slump.nextDouble()));
 					}
-					EventList.InsertEvent(G.arrivalTo1, G.time + 1); //interarrival time = 1, 2 or 5
+					EventList.InsertEvent(G.arrivalTo1, G.time + 5); //interarrival time = 1, 2 or 5
 				} else {
 					noRejected++;
 				}				
