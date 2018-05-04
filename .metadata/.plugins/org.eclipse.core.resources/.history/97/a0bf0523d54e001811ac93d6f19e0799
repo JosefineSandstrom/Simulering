@@ -1,0 +1,26 @@
+import java.util.*;
+import java.io.*;
+
+
+public class Template3 {
+ 
+    public static void main(String[] args) throws IOException {
+    	
+    	Event actEvent;
+    	State actState = new State();
+    	new EventList();
+        EventList.InsertEvent(G.arrivalTo1, 0);	
+        EventList.InsertEvent(G.MEASURE, 5);
+    	while (actState.noMeasurements < 1000){
+    		actEvent = EventList.FetchEvent();
+    		G.time = actEvent.eventTime;
+    		actState.TreatEvent(actEvent);
+    	}
+    	
+    	System.out.println("The mean number of customers in the queuing network: " + 1.0*actState.accumulated/actState.noMeasurements);
+    	System.out.println(actState.noMeasurements);	//Number of measurements 
+    	
+    	
+    	actState.W.close();
+    }
+}
