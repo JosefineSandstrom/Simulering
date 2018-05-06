@@ -6,6 +6,7 @@ public class Template7 {
  
     public static void main(String[] args) throws IOException {
     	Random slump = new Random();
+    	
     	Event actEvent;
     	State7 actState = new State7();
     	new EventList();

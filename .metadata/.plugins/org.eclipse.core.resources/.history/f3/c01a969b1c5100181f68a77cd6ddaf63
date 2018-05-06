@@ -1,0 +1,41 @@
+import java.util.Random;
+
+public class Dispatch extends Proc{
+
+	//The random number generator is started:
+	Random slump = new Random();
+	public Proc sendTo;    //Where to send customers
+	public QS Q1, Q2, Q3, Q4, Q5;
+
+
+	public void TreatSignal(Signal x) {
+		switch (x.signalType){
+		case ARRIVAL:{
+			
+			//Algorithm 1: Random
+			int temp = 1 + slump.nextInt(4);
+			if (temp == 1){
+				sendTo = Q1;
+			} else if (temp == 2){
+				sendTo = Q2;
+			} else if (temp == 3){
+				sendTo = Q3;
+			} else if (temp == 4){
+				sendTo = Q4;
+			} else if (temp == 5){
+				sendTo = Q5;
+			}
+			
+			//Algorithm 2: Round Robin
+			
+			
+			//Algorithm 3
+			
+			
+			SignalList.SendSignal(ARRIVAL, sendTo, time);
+			break;
+		}
+		}
+	}
+
+}

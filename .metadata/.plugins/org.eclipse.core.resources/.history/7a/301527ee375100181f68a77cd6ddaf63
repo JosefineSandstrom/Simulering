@@ -1,0 +1,58 @@
+import java.util.*;
+import java.io.*;
+
+
+public class Template5 extends G5{
+
+	public static void main(String[] args) throws IOException {
+
+		// The signal list is started and actSignal is declaree. actSignal is the latest signal that has been fetched from the 
+		// signal list in the main loop below.
+
+		Signal actSignal;
+		new SignalList();
+
+		// Here process instances are created (five queues and one generator) and their parameters are given values. 
+
+		QS Q1 = new QS();
+		Q1.sendTo = null;
+		
+		QS Q2 = new QS();
+		Q2.sendTo = null;
+		
+		QS Q3 = new QS();
+		Q3.sendTo = null;
+
+		QS Q4 = new QS();
+		Q4.sendTo = null;
+		
+		QS Q5 = new QS();
+		Q5.sendTo = null;		
+		
+		Gen Generator = new Gen();		
+		Dispatch disp = new Dispatch(); //Dispatch instance are created
+		Generator.sendTo = disp; 		// The generated customers shall be sent to DISPATCH
+		
+		Generator.mu = 0.12; //mean arrival times = 0.11, 0.15 or 2.0
+		
+		//To start the simulation the first signals are put in the signal list
+		SignalList.SendSignal(READY,Generator, 0);
+		
+		
+		// This is the main loop
+    	while (time < 105000){
+    		actSignal = SignalList.FetchSignal();
+    		time = actSignal.arrivalTime;
+    		actSignal.destination.TreatSignal(actSignal);
+    	}
+		
+    	
+    	//Finally the result of the simulation is printed below:
+    	double meanNoJobs = (Q1.accumulated / Q1.noMeasurements + Q2.accumulated / Q2.noMeasurements + 
+    			Q3.accumulated / Q3.noMeasurements + Q4.accumulated / Q4.noMeasurements + Q5.accumulated / Q5.noMeasurements);
+    	System.out.println("Mean number jobs in system: " + meanNoJobs);
+    	
+    	
+		
+	}
+}

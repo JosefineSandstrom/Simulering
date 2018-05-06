@@ -4,42 +4,38 @@ import java.io.*;
 // This class defines a simple queuing system with one server. It inherits Proc so that we can use time and the
 // signal names without dot notation
 class QS extends Proc{
-	public int numberInQueue = 0, accumulated, noMeasurements;
+	public int numberInQueue = 0, noReady;
+	public double accumulated, noMeasurements, totalTimeInSystem;
 	public Proc sendTo;
 	Random slump = new Random();
-	boolean is1Busy = false;
-	boolean is2Busy = false;
+	LinkedList<Double> arrivalTimes = new LinkedList<Double>();
 
 	public void TreatSignal(Signal x){
 		switch (x.signalType){
 
-			case ARRIVAL:{
-				numberInQueue++;
-				if (numberInQueue == 1){
-					if(!is1Busy){
-						is1Busy = true;
-						SignalList.SendSignalToServer(READY,this, time + 0.2*slump.nextDouble(),1);
-					} else if(!is2Busy) {
-						is2Busy = true;
-						SignalList.SendSignalToServer(READY,this, time + 0.2*slump.nextDouble(),2);
-					}
+			case ARRIVAL:{				
+				arrivalTimes.addLast(time);
+				if (numberInQueue == 0){
+					SignalList.SendSignal(READY,this, time - (0.5)*Math.log(slump.nextDouble()));
 				}
+				numberInQueue++;
+				
 			} break;
 
 			case READY:{
+				noReady++;
+				totalTimeInSystem += time - arrivalTimes.poll();
 				numberInQueue--;
-				if (sendTo != null){
-					SignalList.SendSignal(ARRIVAL, sendTo, time);
-				}
 				if (numberInQueue > 0){
-					SignalList.SendSignal(READY, this, time + 0.2*slump.nextDouble());
+					SignalList.SendSignal(READY, this, time - (0.5)*Math.log(slump.nextDouble()));
 				}
+				
 			} break;
 
 			case MEASURE:{
 				noMeasurements++;
 				accumulated = accumulated + numberInQueue;
-				SignalList.SendSignal(MEASURE, this, time + 2*slump.nextDouble());
+				SignalList.SendSignal(MEASURE, this, time + 2.0*slump.nextDouble());
 			} break;
 		}
 	}
