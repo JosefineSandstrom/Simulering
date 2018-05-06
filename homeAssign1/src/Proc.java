@@ -3,7 +3,7 @@
 // method treatSignal, which is needed in the main program.
 
 
-public abstract class Proc extends G{
+public abstract class Proc extends G5{
 	public abstract void TreatSignal(Signal x);
 }
 
