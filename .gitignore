@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 *.metadata/*
+=======
+/.metadata/
+/.recommenders/
+>>>>>>> 4942e2182312f8065a400f5f33098fd6c4a695c8
