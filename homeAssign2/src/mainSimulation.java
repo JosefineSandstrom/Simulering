@@ -25,20 +25,7 @@ public class mainSimulation {
 				BufferedReader in = new BufferedReader(new FileReader(sb.toString()));
 				String str; 
 				int j = 0;
-				while((str= in.readLine())  != null){
-					
-//					if(j % 2 == 0){
-//						int x = Integer.parseInt(str);
-//					} else {
-//						int y = Integer.parseInt(str);
-//					}
-//					j++;
-//					
-//					
-					
-					
-					
-					
+				while((str = in.readLine())  != null){				
 					j++;
 					if(j % 2 == 0){						
 						String[] ar=str.split(", ");
