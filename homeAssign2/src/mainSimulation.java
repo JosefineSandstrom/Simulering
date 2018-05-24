@@ -15,7 +15,7 @@ public class mainSimulation {
 		Signal actSignal;
 		new SignalList();
 		
-		double ts = - (4000)*Math.log(rand.nextDouble());
+		double ts = 4000;
 		SimpleFileWriter fileToMatlab = new SimpleFileWriter("results.m",false);
 		
 		ConfigFile cf = new ConfigFile();
@@ -25,9 +25,11 @@ public class mainSimulation {
 			StringBuilder sb = new StringBuilder("configFile");
 			sb.append(i);
 			sb.append(".txt");
-			noSimulations = 1000*i*100;
+			noSimulations = 1000*i*10;
 			G.time = 0;
 			G.succTran = 0;
+			gw.noStarts = 0;
+			gw.noEnds = 0;
 			//G.unSuccTran = 0; ??????
 						
 			try{
@@ -59,6 +61,7 @@ public class mainSimulation {
 			for(int k = 0; k < sensorList.size(); k++){
 				
 				SignalList.SendSignal(G.WAKEUP,sensorList.get(k), G.time - (ts)*Math.log(rand.nextDouble()));
+				
 			}
 			
 			//Main loop
