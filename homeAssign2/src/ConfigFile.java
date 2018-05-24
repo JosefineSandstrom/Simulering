@@ -4,15 +4,15 @@ import java.util.*;
 
 public class ConfigFile {
 	Random rand = new Random();
-	LinkedList<SensorData> positions;
-	SensorData gwPos = new SensorData(5000, 5000);
+	LinkedList<Sensor> positions;
+	Sensor gwPos = new Sensor(5000, 5000);
 	SimpleFileWriter W; 
 	
 	public ConfigFile(){
 			
 		
 		for(int i = 1; i <= 10; i++){
-			positions = new LinkedList<SensorData>();
+			positions = new LinkedList<Sensor>();
 			StringBuilder sb = new StringBuilder("configFile");
 			sb.append(i);
 			sb.append(".txt");
@@ -22,7 +22,7 @@ public class ConfigFile {
 				
 				int x = (int) (10000*rand.nextDouble());
 				int y = (int) (10000*rand.nextDouble());
-				SensorData sensorPos = new SensorData(x,y);
+				Sensor sensorPos = new Sensor(x,y);
 				
 				if(!positions.contains(sensorPos) && !sensorPos.equals(gwPos)){
 					positions.add(sensorPos);
