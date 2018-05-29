@@ -22,7 +22,7 @@ public class mainSimulation {
 		
 		//ConfigFile cf = new ConfigFile();
 		
-		for(int i = 7; i <= 10; i++){
+		for(int i = 1; i <= 10; i++){
 			LinkedList<Sensor> sensorList = new LinkedList<Sensor>();
 			StringBuilder sb = new StringBuilder("configFile");
 			sb.append(i);
@@ -48,8 +48,7 @@ public class mainSimulation {
 						double dist = Math.hypot(5000-x,5000-y);
 						inReach = dist <= r;
 						
-						ArrayList<Sensor> neighbors = new ArrayList<Sensor>();
-						Sensor aSensor = new Sensor(x, y, inReach, isSending, neighbors);		
+						Sensor aSensor = new Sensor(x, y, inReach);		
 						aSensor.sendTo = gw;
 						sensorList.add(aSensor);
 						
@@ -61,7 +60,12 @@ public class mainSimulation {
 	            System.out.println("File Read Error");
 	        }		
 			
+			
+			
+			
 			for(int j = 0; j < sensorList.size(); j++){ 
+			
+			/*
 				for(int k = 0; k < sensorList.size(); k++){
 					if(!sensorList.get(j).equals(sensorList.get(k))){
 						double dist = Math.hypot(sensorList.get(j).x-sensorList.get(k).x,
@@ -71,7 +75,7 @@ public class mainSimulation {
 						}
 					}
 				}
-				
+			*/	
 				SignalList.SendSignal(G.WAKEUP,sensorList.get(j), G.time - (ts)*Math.log(rand.nextDouble()));
 			}
 			
@@ -89,7 +93,7 @@ public class mainSimulation {
 			double packetloss = (1.0)*G.unSuccTran / G.time;
 			//System.out.println(packetloss);
 			System.out.println(throughput);
-			//fileToMatlab.println(String.valueOf(packetloss));
+			fileToMatlab.println(String.valueOf(packetloss));
 		}		
 		//cf.W.close();
 		fileToMatlab.close();

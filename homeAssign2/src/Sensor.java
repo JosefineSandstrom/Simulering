@@ -8,10 +8,10 @@ public class Sensor extends Proc{
 	public int x;
 	public int y;
 	public boolean inReach;
-	public boolean isSending;
-	public ArrayList<Sensor> neighbors;
+//	public boolean isSending;
+//	public ArrayList<Sensor> neighbors;
 	public double lb = 0;
-	public double ub = 10;
+	public double ub = 1000;
 	Random rand = new Random();
 	public boolean temp = false;
 	
@@ -21,21 +21,11 @@ public class Sensor extends Proc{
 		this.y = y;
 	}
 	
-	public Sensor(int x, int y, boolean inReach, boolean isSending) {
+	public Sensor(int x, int y, boolean inReach) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.inReach = inReach;
-		this.isSending = isSending;
-	}
-	
-	public Sensor(int x, int y, boolean inReach, boolean isSending,ArrayList<Sensor> neighbors) {
-		super();
-		this.x = x;
-		this.y = y;
-		this.inReach = inReach;
-		this.isSending = isSending;
-		this.neighbors = neighbors;
 	}
 	
 	
@@ -50,51 +40,46 @@ public class Sensor extends Proc{
 			case SEND:{				
 				boolean allowedToSend = true; 
 				
-				for(int i = 0; i < neighbors.size(); i++){
-					if(neighbors.get(i).isSending){
-						allowedToSend = false;
-						break;
-					}
+				
+			for(int i = 0; i < sensorSending.size(); i++){
+				double dist = Math.hypot(sensorSending.get(i).x - this.x, sensorSending.get(i).y - this.y);
+				if(dist <= r){
+					allowedToSend = false;
+					break;
 				}
+			}
+				
 				
 				if(!allowedToSend){
 					if(inReach){ 
-						double timeTmp = lb + (ub-lb)*rand.nextDouble();
-						SignalList.SendSignal(SENDING, this, time + timeTmp);
-						SignalList.SendSignal(ARRIVAL, sendTo, time + timeTmp);		
+						SignalList.SendSignal(WAIT, sendTo, time + lb + (ub-lb)*rand.nextDouble());		
 						
 					} else { 
-						temp = true;
-						SignalList.SendSignal(OUTOFRANGE, this, time + lb + (ub-lb)*rand.nextDouble());
+						SignalList.SendSignal(WAIT, this, time + lb + (ub-lb)*rand.nextDouble());
 					}
 				} else {
+					sensorSending.add(this);
 					if(inReach){ 
-						SignalList.SendSignal(SENDING, this, time);
 						SignalList.SendSignal(ARRIVAL, sendTo, time);				
 					} else {
-						isSending = true;
 						SignalList.SendSignal(OUTOFRANGE, this, time + 1);
 					}
 				}					
 			}break;
 			
 			case OUTOFRANGE:{	
-				if(temp){
-					isSending = true;
-					temp = false;
+				sensorSending.remove(0);
+			}break;
+			
+			case WAIT:{	
+				sensorSending.add(this);
+				if(inReach){
+					SignalList.SendSignal(ARRIVAL, this, time);
+				} else {
 					SignalList.SendSignal(OUTOFRANGE, this, time + 1);
 				}
-				isSending = false;
 			}break;
 			
-			case SENDING:{	
-				isSending = true;
-				SignalList.SendSignal(DONESENDING, this, time + 1);
-			}break;
-			
-			case DONESENDING:{	
-				isSending = false;
-			}break;
 		}
 		
 	}

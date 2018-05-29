@@ -23,6 +23,7 @@ public class Gateway extends Proc{
 	
 			case PROCESSING_TEST:{
 				noEnds++;
+				sensorSending.remove(0);
 				if(noEnds == noStarts){
 					succTran++;
 					gwBusy = false;
@@ -33,6 +34,7 @@ public class Gateway extends Proc{
 			
 			case PROCESSING_FAIL:{
 				unSuccTran++;
+				sensorSending.remove(0);	
 				noEnds++;
 				if(noEnds == noStarts){
 					gwBusy = false;
