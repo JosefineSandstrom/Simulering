@@ -73,9 +73,7 @@ public class mainSimulation {
 	    	}
 			
 			double throughput = (1.0)*(G.succTran / G.time); 
-			//System.out.println("Time: " + G.time);
-			//System.out.println("succTran:" + G.succTran);
-			double packetloss = (1.0)*G.unSuccTran / G.load;
+			double packetloss = (1.0)*G.unSuccTran / G.load; //Ändra ???
 			//System.out.println(packetloss);
 			System.out.println(throughput);
 			//fileToMatlab.println(String.valueOf(packetloss));
