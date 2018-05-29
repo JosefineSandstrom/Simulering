@@ -13,6 +13,7 @@ INDEX VERSION 1.127+/Users/Josefine/Documents/Skola/Simulering/Simulering/.metad
 1597357986.index
 3637929226.index
 3969190818.index
+118197106.index
 609331307.index
 1260736551.index
 2650987208.index

@@ -9,8 +9,10 @@ public class mainSimulation {
 		Random rand = new Random();
 		int r = 7000;
 		boolean inReach;
+		boolean isSending = false;
 		int noSimulations;
 		Gateway gw = new Gateway();
+		
 		
 		Signal actSignal;
 		new SignalList();
@@ -18,9 +20,9 @@ public class mainSimulation {
 		double ts = 4000;
 		SimpleFileWriter fileToMatlab = new SimpleFileWriter("results.m",false);
 		
-		ConfigFile cf = new ConfigFile();
+		//ConfigFile cf = new ConfigFile();
 		
-		for(int i = 1; i <= 10; i++){
+		for(int i = 7; i <= 10; i++){
 			LinkedList<Sensor> sensorList = new LinkedList<Sensor>();
 			StringBuilder sb = new StringBuilder("configFile");
 			sb.append(i);
@@ -30,7 +32,7 @@ public class mainSimulation {
 			G.succTran = 0;
 			gw.noStarts = 0;
 			gw.noEnds = 0;
-			//G.unSuccTran = 0; ??????
+			G.unSuccTran = 0;
 						
 			try{
 				BufferedReader in = new BufferedReader(new FileReader(sb.toString()));
@@ -46,7 +48,8 @@ public class mainSimulation {
 						double dist = Math.hypot(5000-x,5000-y);
 						inReach = dist <= r;
 						
-						Sensor aSensor = new Sensor(x, y, inReach);		
+						ArrayList<Sensor> neighbors = new ArrayList<Sensor>();
+						Sensor aSensor = new Sensor(x, y, inReach, isSending, neighbors);		
 						aSensor.sendTo = gw;
 						sensorList.add(aSensor);
 						
@@ -58,10 +61,18 @@ public class mainSimulation {
 	            System.out.println("File Read Error");
 	        }		
 			
-			for(int k = 0; k < sensorList.size(); k++){
+			for(int j = 0; j < sensorList.size(); j++){ 
+				for(int k = 0; k < sensorList.size(); k++){
+					if(!sensorList.get(j).equals(sensorList.get(k))){
+						double dist = Math.hypot(sensorList.get(j).x-sensorList.get(k).x,
+								sensorList.get(j).y-sensorList.get(k).y);
+						if(dist <= r){
+							sensorList.get(j).neighbors.add(sensorList.get(k));
+						}
+					}
+				}
 				
-				SignalList.SendSignal(G.WAKEUP,sensorList.get(k), G.time - (ts)*Math.log(rand.nextDouble()));
-				
+				SignalList.SendSignal(G.WAKEUP,sensorList.get(j), G.time - (ts)*Math.log(rand.nextDouble()));
 			}
 			
 			//Main loop
@@ -72,13 +83,15 @@ public class mainSimulation {
 	    		noSimulations--;
 	    	}
 			
+			//Calculations
+			
 			double throughput = (1.0)*(G.succTran / G.time); 
-			double packetloss = (1.0)*G.unSuccTran / G.load; //Ändra ???
+			double packetloss = (1.0)*G.unSuccTran / G.time;
 			//System.out.println(packetloss);
 			System.out.println(throughput);
 			//fileToMatlab.println(String.valueOf(packetloss));
 		}		
-		cf.W.close();
+		//cf.W.close();
 		fileToMatlab.close();
 	}
 
