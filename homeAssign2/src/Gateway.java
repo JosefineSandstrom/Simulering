@@ -13,6 +13,7 @@ public class Gateway extends Proc{
 
 			case ARRIVAL:{
 				noStarts++;
+				load++;
 				if(gwBusy){
 					SignalList.SendSignal(PROCESSING_FAIL, this, time + tm);
 				} else {
