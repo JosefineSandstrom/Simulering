@@ -15,12 +15,13 @@ public class SignalList{
     	list.next = last;
 	}
 
-	public static void SendSignal(int type, Proc dest, double arrtime){
+	public static void SendSignal(int type, Proc source, Proc dest, double arrtime){
 		Signal dummy, predummy;
 		Signal newSignal = new Signal();
 		newSignal.signalType = type;
 		newSignal.destination = dest;
 		newSignal.arrivalTime = arrtime;
+		newSignal.source = source;
 		predummy = list;
 		dummy = list.next;
 		while ((dummy.arrivalTime < newSignal.arrivalTime) & (dummy != last)){

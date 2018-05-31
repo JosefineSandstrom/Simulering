@@ -1,15 +1,17 @@
 
+
 import java.util.*;
+
 import java.io.*;
 
-public class mainSimulation {
+public class Test {
 
 
 	public static void main(String[] args) {
 		Random rand = new Random();
-		int [] radius = new int[]{6000, 7000, 8000, 9000, 10000, 11000};
+		G.r = 7000;
 		boolean inReach;
-		//int noSimulations;
+		int noSimulations;
 		Gateway gw = new Gateway();
 
 
@@ -21,13 +23,12 @@ public class mainSimulation {
 
 		//ConfigFile cf = new ConfigFile();
 
-		for(int i = 0; i < radius.length; i++){ //changed for 1d)
+		for(int i = 1; i <= 10; i++){
 			LinkedList<Sensor> sensorList = new LinkedList<Sensor>();
 			StringBuilder sb = new StringBuilder("configFile");
-			G.sensorSending.clear();
-			sb.append(2);	//n = 2000
+			sb.append(i);
 			sb.append(".txt");
-			//noSimulations = 20000; //changed for 1d)
+			noSimulations = 10000*i;
 			G.time = 0;
 			G.succTran = 0;
 			gw.noStarts = 0;
@@ -35,9 +36,8 @@ public class mainSimulation {
 			G.unSuccTran = 0;
 			G.gwBusy = false;
 			G.load = 0;
-			G.r = radius[i];
-			
-			
+			G.sensorSending.clear();
+
 			try{
 				BufferedReader in = new BufferedReader(new FileReader(sb.toString()));
 				String str; 
@@ -51,7 +51,6 @@ public class mainSimulation {
 
 						double dist = Math.hypot(5000-x,5000-y);
 						inReach = dist <= G.r;
-						
 
 						Sensor aSensor = new Sensor(x, y, inReach);		
 						aSensor.sendTo = gw;
@@ -67,19 +66,21 @@ public class mainSimulation {
 
 
 			for(int j = 0; j < sensorList.size(); j++){ 
-				SignalList.SendSignal(G.WAKEUP, sensorList.get(j), sensorList.get(j), G.time - (ts)*Math.log(rand.nextDouble()));
+				SignalList.SendSignal(G.WAKEUP,sensorList.get(j), sensorList.get(j), G.time - (ts)*Math.log(rand.nextDouble()));
 			}
 
 			//Main loop
-			while (G.time < 20000){//*(i)){
+			while (noSimulations > 0){
 				actSignal = SignalList.FetchSignal();
 				G.time = actSignal.arrivalTime;
 				actSignal.destination.TreatSignal(actSignal);
-				
+				noSimulations--;
 			}
+
 			//Calculations			
 			double throughput = (1.0)*G.succTran / G.time; 
 			double packetloss = (1.0)*G.unSuccTran / G.load;
+			//System.out.println(packetloss);
 			System.out.println(throughput);
 			fileToMatlab.println(String.valueOf(packetloss));
 		}		

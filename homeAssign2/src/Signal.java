@@ -6,6 +6,7 @@
 // information just do it here. 
 
 class Signal{
+	public Proc source;
 	public Proc destination;
 	public double arrivalTime;
 	public int signalType;
