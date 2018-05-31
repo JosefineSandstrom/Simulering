@@ -1,4 +1,3 @@
-package homeAssign2;
 
 // Denna klass definierar signallistan. Om man vill skicka mer information i signalen �n minimum, s� kan
 // man skriva ytterligare variante av SendSignal som inneh�ller fler parametrar.

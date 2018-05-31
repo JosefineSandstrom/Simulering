@@ -1,4 +1,4 @@
-package homeAssign2;
+
 
 // This is an abstract class which all classes that are used for defining real 
 // process types inherit. The puropse is to make sure that they all define the 
