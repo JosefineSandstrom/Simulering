@@ -12,7 +12,6 @@ public class mainSimulation {
 		int noSimulations;
 		Gateway gw = new Gateway();
 
-
 		Signal actSignal;
 		new SignalList();
 
