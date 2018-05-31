@@ -1,3 +1,5 @@
+package homeAssign2.src;
+
 
 import java.util.*;
 import java.io.*;
@@ -7,17 +9,16 @@ public class mainSimulation {
 
 	public static void main(String[] args) {
 		Random rand = new Random();
-		int v = 2; //2, 4 or U(1,7) m/s
+		int v;
 		Signal actSignal;
-		new SignalList();
-		G.doneStudents = 0; 
+		new SignalList(); 
+		
 		
 		for(int i = 0; i < 20; i++){
+			v = 1 + rand.nextInt(7); //2, 4 or 1 + rand.nextInt(7) m/s
 			int startX = rand.nextInt(20);
 			int startY = rand.nextInt(20);
 			Student aStudent = new Student(startX, startY, v);
-			aStudent.currentX = startX;
-			aStudent.currentY = startY;
 			G.hall[startX][startY]++;
 			SignalList.SendSignal(G.WALK, aStudent, 0);
 			G.students[i] = aStudent;
@@ -39,7 +40,7 @@ public class mainSimulation {
 			actSignal = SignalList.FetchSignal();
 			G.time = actSignal.arrivalTime;
 			actSignal.destination.TreatSignal(actSignal);
-			System.out.println("Done students" + G.doneStudents);
+			//System.out.println("Done students" + G.doneStudents);
 		}
 		
 

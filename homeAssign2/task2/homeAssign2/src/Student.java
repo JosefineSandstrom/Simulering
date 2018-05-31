@@ -1,8 +1,8 @@
+package homeAssign2.src;
+
 import java.util.*;
 
 public class Student extends Proc {
-	public int startX;
-	public int startY;
 	public int velocity;
 	public int currentX;
 	public int currentY;
@@ -15,10 +15,11 @@ public class Student extends Proc {
 	public int totalMet;
 	public int[] studentsMet;
 	public int talkTime = 60;
+	public boolean talking = false;
 
 	public Student(int x, int y, int v) {
-		startX = x;
-		startY = y;
+		currentX = x;
+		currentY = y;
 		velocity = v;
 		totalMet = 0;
 		studentsMet = new int [20];
@@ -35,44 +36,36 @@ public class Student extends Proc {
 
 			case 1: { // straight up = 90 degrees
 				endX = currentX;
-				if (currentY - distance < 0) {
-					endY = 0;
-				} else {
-					endY = currentY - distance;
-				}
+				endY = Math.max(0, currentY - distance);
 				travelTime = 1.0 / velocity;
 			}
-				break;
+			break;
 
 			case 2: { // 45 degrees
 				if (currentX + distance > 19) {
 					endX = 19;
 					distance = 19 - currentX;
 				} else {
-					endX = (int) (currentX + distance);
+					endX = (currentX + distance);
 				}
 				if (currentY - distance < 0) {
 					endY = 0;
 					distance = currentY;
 					endX = currentX + distance;
-					
+
 				} else {
 					endY = (int) (currentY - distance );
 				}
 				travelTime = Math.sqrt(2) / velocity;
 			}
-				break;
+			break;
 
 			case 3: { // 0 degrees
 				endY = currentY;
-				if (currentX + distance > 19) {
-					endX = 19;
-				} else {
-					endX = currentX + distance;
-				}
+				endX = Math.min(19, currentX + distance);
 				travelTime = 1.0 / velocity;
 			}
-				break;
+			break;
 
 			case 4: { // -45 degrees
 				if (currentX + distance > 19) {
@@ -90,18 +83,14 @@ public class Student extends Proc {
 				}
 				travelTime = Math.sqrt(2) / velocity;
 			}
-				break;
+			break;
 
 			case 5: { // -90 degrees
 				endX = currentX;
-				if (currentY + distance > 19) {
-					endY = 19;
-				} else {
-					endY = currentY + distance;
-				}
+				endY = Math.min(19, currentY + distance);
 				travelTime = 1.0 / velocity;
 			}
-				break;
+			break;
 
 			case 6: { // -135 degrees
 				if (currentX - distance < 0) {
@@ -119,18 +108,14 @@ public class Student extends Proc {
 				}
 				travelTime = Math.sqrt(2) / velocity;
 			}
-				break;
+			break;
 
 			case 7: { // 180 degrees
 				endY = currentY;
-				if (currentX - distance < 0) {
-					endX = 0;
-				} else {
-					endX = currentX - distance;
-				}
+				endX = Math.max(0, currentX - distance);
 				travelTime = 1.0 / velocity;
 			}
-				break;
+			break;
 
 			case 8: { // 135 degrees
 				if (currentX - distance < 0) {
@@ -148,94 +133,48 @@ public class Student extends Proc {
 				}
 				travelTime = Math.sqrt(2) / velocity;
 			}
-				break;
+			break;
 			}
 			SignalList.SendSignal(CHECK, this, time + travelTime);
 		}
-			break;
+		break;
 
 		case TALK: {
-			for (int i = 0; i < students.length; i++) { // need this.currentY?
-				if (students[i].currentX == currentX && students[i].currentY == currentY && students[i] != this) {
+			for (int i = 0; i < students.length; i++) { 
+				if (students[i].currentX == currentX && students[i].currentY == currentY 
+						&& students[i] != this) {
 					if (studentsMet[i] == 0) {
 						totalMet++;
+						if (totalMet == 19) {
+							doneStudents++;
+						}
 					}
 					studentsMet[i]++;
 				}
 			}
-			if (totalMet == 19) {
-				doneStudents++;
-			}
-			SignalList.SendSignal(CHECK, this, time + talkTime + travelTime);
+			
+			SignalList.SendSignal(ENDTALK, this, time + talkTime);
 		}
-			break;
+		break;
 
 		case CHECK: {
-			int tmp = hall[currentX][currentY]--;
-			if (tmp < 0) {
-				hall[currentX][currentY] = 0;
-			} else {
-				hall[currentX][currentY]--;
+			if (talking){
+				break;
 			}
 			if (currentX == endX && currentY == endY) {
 				SignalList.SendSignal(WALK, this, time);
 			} else {
-				switch (direction) {
-
-				case 1: { // straight up = 90 degrees
-					currentY--;
-				}
-					break;
-
-				case 2: { // 45 degrees
-					currentX++;
-					currentY--;
-				}
-					break;
-
-				case 3: { // 0 degrees
-					currentX++;
-				}
-					break;
-
-				case 4: { // -45 degrees
-					currentX++;
-					currentY++;
-				}
-					break;
-
-				case 5: { // -90 degrees
-					currentY++;
-				}
-					break;
-
-				case 6: { // -135 degrees
-					currentX--;
-					currentY++;
-				}
-					break;
-
-				case 7: { // 180 degrees
-					currentX--;
-				}
-					break;
-
-				case 8: { // 135 degrees
-					currentX--;
-					currentY--;
-				}
-					break;
-				}
+				hall[currentX][currentY]--;
+				move();
 				hall[currentX][currentY]++;
-				if (hall[currentX][currentY] == 1) {
-					SignalList.SendSignal(ENDCHECK, this, time + travelTime); 
-					
-				} else if (hall[currentX][currentY] == 2) {
+				if (hall[currentX][currentY] == 2) {
 					for (int i = 0; i < students.length; i++) {
 						if (students[i].currentX == currentX && students[i].currentY == currentY
 								&& students[i] != this) {
 							SignalList.SendSignal(TALK, this, time);
-							// SignalList.SendSignal(TALK, students[i], time);
+							SignalList.SendSignal(TALK, students[i], time);
+							students[i].talking = true;
+							talking = true;
 						}
 					}
 
@@ -244,16 +183,62 @@ public class Student extends Proc {
 				}
 			}
 		}
-			break;
-			
-		case ENDCHECK:{
-			if(hall[currentX][currentY] >= 2) {
-				SignalList.SendSignal(TALK, this, time);
-			} else {
-				SignalList.SendSignal(CHECK, this, time);
-			}
+		break;
+
+		case ENDTALK:{
+			talking = false;
+			SignalList.SendSignal(CHECK, this, time + travelTime);
 		}
-			break;
+		break;
+		}
+	}
+
+	private void move() {
+		switch (direction) {
+
+		case 1: { // straight up = 90 degrees
+			currentY--;
+		}
+		break;
+
+		case 2: { // 45 degrees
+			currentX++;
+			currentY--;
+		}
+		break;
+
+		case 3: { // 0 degrees
+			currentX++;
+		}
+		break;
+
+		case 4: { // -45 degrees
+			currentX++;
+			currentY++;
+		}
+		break;
+
+		case 5: { // -90 degrees
+			currentY++;
+		}
+		break;
+
+		case 6: { // -135 degrees
+			currentX--;
+			currentY++;
+		}
+		break;
+
+		case 7: { // 180 degrees
+			currentX--;
+		}
+		break;
+
+		case 8: { // 135 degrees
+			currentX--;
+			currentY--;
+		}
+		break;
 		}
 	}
 }

@@ -1,11 +1,7 @@
-/ConfigFile.class
 /G.class
-/Gateway.class
-/Position.class
 /Proc.class
-/Sensor.class
 /Signal.class
 /SignalList.class
 /SimpleFileWriter.class
+/Student.class
 /mainSimulation.class
-/SensorData.class
